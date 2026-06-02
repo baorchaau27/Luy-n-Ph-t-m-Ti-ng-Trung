@@ -1,4 +1,174 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện Phát Âm Tiếng Trung</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f7fb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.card{
+    width:90%;
+    max-width:500px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,.1);
+    text-align:center;
+}
+
+h1{
+    color:#2563eb;
+}
+
+.word{
+    font-size:60px;
+    margin:20px 0;
+}
+
+.pinyin{
+    color:#dc2626;
+    font-size:28px;
+}
+
+.meaning{
+    color:#666;
+    margin-top:10px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:15px 25px;
+    border-radius:30px;
+    cursor:pointer;
+    font-size:18px;
+    margin-top:20px;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+#result{
+    margin-top:20px;
+    font-size:18px;
+}
+
+.score{
+    font-size:40px;
+    color:green;
+    font-weight:bold;
+}
+</style>
+</head>
+<h1> Lê Đặng Bảo Châu </h1>
+
+<body>
+
+<div class="card">
+
+<h1>Phát Âm Tiếng Trung</h1>
+
+<div class="pinyin">Nǐ hǎo</div>
+
+<div class="word">你好</div>
+
+<div class="meaning">(Xin chào)</div>
+
+<button id="speakBtn">
+🎤 Bật Micro và Nói
+</button>
+
+<div id="result">
+Sẵn sàng.
+</div>
+
+</div>
+
+<script>
+
+const target = "你好";
+
+const btn = document.getElementById("speakBtn");
+const result = document.getElementById("result");
+
+btn.addEventListener("click", startSpeech);
+
+function startSpeech(){
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if(!SpeechRecognition){
+        result.innerHTML =
+        "❌ Trình duyệt không hỗ trợ nhận diện giọng nói.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "zh-CN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    result.innerHTML = "🎤 Đang nghe...";
+
+    recognition.start();
+
+    recognition.onresult = function(event){
+
+        const spoken =
+        event.results[0][0].transcript.trim();
+
+        let score = 0;
+
+        if(spoken === target){
+            score = 100;
+        }else{
+
+            let same = 0;
+
+            for(let i=0;i<Math.min(spoken.length,target.length);i++){
+                if(spoken[i]===target[i]) same++;
+            }
+
+            score = Math.round(
+                same /
+                Math.max(spoken.length,target.length)
+                *100
+            );
+        }
+
+        result.innerHTML = `
+            <p>Bạn đọc:</p>
+            <b>${spoken}</b>
+            <br><br>
+            <div class="score">${score}/100</div>
+        `;
+    };
+
+    recognition.onerror = function(e){
+        result.innerHTML =
+        "❌ Lỗi micro: " + e.error;
+    };
+}
+
+</script>
+
+</body>
+</html><!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
